@@ -27,6 +27,7 @@ typedef struct node_t {
 // GPIO 13 == pin 33 on Pi == pin 25 on dragonboard
 void setGPIO() {
   FILE *fp;
+  FILE *ff;
   FILE *fpp;
   
   fp = fopen("/sys/class/gpio/export", "w");
@@ -38,13 +39,23 @@ void setGPIO() {
   fprintf(fp, "%u", 13);
   fclose(fp);
 
+  ff = fopen("/sys/class/gpio/gpio13/value", "w");
+  if (ff == NULL) {
+    perror("Could not open gpio value\n");
+    return;
+  }
+
+  fputs("0", ff);
+  
+  fclose(ff);
+
   fpp = fopen("/sys/class/gpio/gpio13/direction", "w");
   if (fpp == NULL) {
     perror("Could not open gpio direction\n");
     return;
   }
 
-  fputs("in", fpp);
+  fputs("out", fpp);
   fclose(fpp);
 }
 
@@ -57,11 +68,17 @@ void setLED() {
   }
 
   fputs("1", fp);
-
-  usleep(1000000); // 1 sec;
-
-  fputs("0", fp);
+  fclose(fp);
   
+  usleep(1000000); // 1 sec;
+  
+  fp = fopen("/sys/class/gpio/gpio13/value", "w");
+  if (fp == NULL) {
+    perror("Could not open gpio value\n");
+    return;
+  }
+
+  fputs("0", fp);  
   fclose(fp);
 }
 
