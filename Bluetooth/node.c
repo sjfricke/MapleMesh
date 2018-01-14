@@ -128,7 +128,7 @@ int main(int argc, char **argv)
 	default:
 	  break;
 	}
-	//	setLED();
+	setLED();
 	printf("received [%s]\n", buf);
       }
   }

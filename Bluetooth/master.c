@@ -47,17 +47,22 @@ void* probeValues(void* slave_arg) {
   addr.rc_channel = slave->channel;
   str2ba( slave->mac, &addr.rc_bdaddr );
 
-  // connect to server
-  status = connect(s, (struct sockaddr *)&addr, sizeof(addr));
+  while (1) {
+    // connect to server
+    status = connect(s, (struct sockaddr *)&addr, sizeof(addr));
 
-  // send a message
-  if( status == 0 ) {
-    status = write(s, "0", 1);
+    // send a message
+    if( status == 0 ) {
+      status = write(s, "0", 1);
+    }
+
+    //  if( status < 0 ) perror("uh oh");
+
+    close(s);
+    
+    usleep(1000000 * POLL_TIME);
   }
 
-  //  if( status < 0 ) perror("uh oh");
-
-  close(s);
   return 0;
 }
 
