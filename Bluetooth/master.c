@@ -15,7 +15,7 @@
 pthread_t probe_thread_0;
 pthread_t probe_thread_1;
 
-const int POLL_TIME = 5; // secs
+const int POLL_TIME = 4; // secs
 
 typedef struct slave_t {
   char mac[18];
@@ -38,8 +38,11 @@ void* probeValues(void* slave_arg) {
   
   struct sockaddr_rc addr = { 0 };
   int s, status;
+  
 
-  // allocate a socket
+  while (1) {
+
+      // allocate a socket
   s = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
 
   // set the connection parameters (who to connect to)
@@ -47,7 +50,6 @@ void* probeValues(void* slave_arg) {
   addr.rc_channel = slave->channel;
   str2ba( slave->mac, &addr.rc_bdaddr );
 
-  while (1) {
     // connect to server
     status = connect(s, (struct sockaddr *)&addr, sizeof(addr));
 
@@ -57,12 +59,10 @@ void* probeValues(void* slave_arg) {
     }
 
     //  if( status < 0 ) perror("uh oh");
-
-    close(s);
-    
+      close(s);
+      
     usleep(1000000 * POLL_TIME);
   }
-
   return 0;
 }
 
@@ -103,7 +103,6 @@ int main(int argc, char **argv)
   }
   pthread_detach(probe_thread_0);
 
-  
   status = pthread_create(&probe_thread_1,
 			  NULL,
 			  probeValues,
@@ -113,7 +112,7 @@ int main(int argc, char **argv)
     printf("--SERVER-- ERROR: Are you feeling it now Mr Krabs?\n");
   }
   pthread_detach(probe_thread_1);  
-  
+
   // accept one connection
   while((client = accept(s, (struct sockaddr *)&rem_addr, &opt))) {
 
