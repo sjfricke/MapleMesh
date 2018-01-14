@@ -1,12 +1,75 @@
-
+// TODO - Need to check power and discoverable are on from bluetoothctl
 #include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <bluetooth/bluetooth.h>
 #include <bluetooth/rfcomm.h>
 
+#define TRUE 1
+#define FALSE 0
+
+const int POLL_TIME = 5; // secs
+
+typedef struct node_t {
+  int16_t temp;
+  uint8_t vol;
+  uint8_t full;  
+  float lat;
+  float lng;
+  char  mac[18];
+} node_t;
+
+
+
+// for demo we are blinking light
+// GPIO 13 == pin 33 on Pi == pin 25 on dragonboard
+void setGPIO() {
+  FILE *fp;
+  FILE *fpp;
+  
+  fp = fopen("/sys/class/gpio/export", "w");
+  if (fp == NULL) {
+    perror("Could not open gpio export\n");
+    return;
+  }
+
+  fprintf(fp, "%u", 13);
+  fclose(fp);
+
+  fpp = fopen("/sys/class/gpio/gpio13/direction", "w");
+  if (fpp == NULL) {
+    perror("Could not open gpio direction\n");
+    return;
+  }
+
+  fputs("in", fpp);
+  fclose(fpp);
+}
+
+void setLED() {
+  FILE *fp;
+  fp = fopen("/sys/class/gpio/gpio13/value", "w");
+  if (fp == NULL) {
+    perror("Could not open gpio value\n");
+    return;
+  }
+
+  fputs("1", fp);
+
+  usleep(1000000); // 1 sec;
+
+  fputs("0", fp);
+  
+  fclose(fp);
+}
+
 int main(int argc, char **argv)
 {
+  // for demo
+  setGPIO();
+  
   struct sockaddr_rc loc_addr = { 0 }, rem_addr = { 0 };
   char buf[1024] = { 0 };
   int s, client, bytes_read;
@@ -35,6 +98,7 @@ int main(int argc, char **argv)
       // read data from the client
       bytes_read = read(client, buf, sizeof(buf));
       if( bytes_read > 0 ) {
+	setLED();
 	printf("received [%s]\n", buf);
       }
   }
