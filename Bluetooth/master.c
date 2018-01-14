@@ -72,7 +72,10 @@ int main(int argc, char **argv)
   char buf[1024] = { 0 };
   int s, client, bytes_read, status;
   socklen_t opt = sizeof(rem_addr);
-
+  char command[256];
+  int id;
+  FILE* fp;
+  char volume[4];
   // allocate socket
   s = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
 
@@ -123,7 +126,7 @@ int main(int argc, char **argv)
     // read data from the client
     bytes_read = read(client, buf, sizeof(buf));
     if( bytes_read > 0 ) {
-      switch (buf[0]) {
+      /*      switch (buf[0]) {
       case '0': // get value
 	//	sendValue();
 	break;
@@ -136,6 +139,25 @@ int main(int argc, char **argv)
       }
       //      setLED();
       printf("received [%s]\n", buf);
+      }*/
+
+      if (buf[0] == 'B') {
+	id = 0;
+      } else {
+	id = 1;
+      }
+
+      fp = fopen("/home/pi/volume.txt", "r");
+      if (fp == NULL) {
+	perror("Could not open volume.txt\n");
+      } else {
+	fgets(volume, sizeof(volume), fp);
+	fclose(fp);
+      }
+      
+      // Set up output through speakers
+      sprintf(command, "curl --data \"id=%d&volume=%s\" 10.19.134.167:3000/api/bucket/update/volume", id, volume);
+      system(command);
     }
   }
 
