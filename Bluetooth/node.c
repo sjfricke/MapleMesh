@@ -89,7 +89,8 @@ void sendValue(){
 
   struct sockaddr_rc addr = { 0 };
   int s, status;
-  
+  FILE* fp;
+  char volume[4];
   // allocate a socket
   s = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
 
@@ -103,7 +104,14 @@ void sendValue(){
 
     // send a message
     if( status == 0 ) {
-      status = write(s, "0", 1);
+      fp = fopen("/home/pi/volume.txt", "r");
+      if (fp == NULL) {
+	perror("Could not open volume.txt\n");
+      } else {
+	fgets(volume, sizeof(volume), fp);
+	status = write(s, volume, sizeof(volume));
+	fclose(fp);
+      }
     } else {
       perror("Didn't send back\n");
     }
