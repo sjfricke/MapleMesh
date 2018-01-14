@@ -13,9 +13,11 @@
     router.get('location/:lat/:long', controller.getByLocation);
     router.get('/volume/:volume', controller.getByVolume);
     router.get('/isfull/:isFull', controller.getByIsFull);
+    router.get('/name/:name', controller.getByName);
 
     router.post('/', controller.add);
     router.post('/update/temp/', controller.updateTemperature);
+    router.post('/update/name/', controller.updateName);
     router.post('/update/volume/', controller.updateVolume);
     router.post('/update/location/', controller.updateLocation);
     router.post('/update/:allMax', controller.setMaxVolume);

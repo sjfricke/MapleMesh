@@ -33,4 +33,8 @@ app.use('/api', api);
 //     return res.status(200).send("yay");
 // });
 
-app.listen(3000);
+var port = process.env.PORT || 3000;
+
+app.listen(port, function(){
+    console.log("App is running on " + port);
+});

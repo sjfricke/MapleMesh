@@ -40,6 +40,16 @@
         });
     };
 
+    module.exports.getAll = function(req, res){
+        Bucket.find({}, function(err, buckets){
+            if(err){
+                console.log(err);
+                return res.status(500).send(err);
+            }
+            return res.json(buckets);
+        });
+    };
+
     module.exports.getByTemp = function(req, res){
         Bucket.find({"temp":{$eq: req.params.temp}}, function(err, result){
             if(err){
@@ -57,6 +67,7 @@
             } return res.json(result);
         });
     };
+
 
     module.exports.getByIsFull = function(req, res){
         Bucket.find({"isFull": {$eq: req.params.isFull}}, function(err, result){
@@ -92,6 +103,7 @@
         }
 
         var bucket = new Bucket({
+            name: req.body.name,
             lat: req.body.lat,
             long: req.body.long,
             temp: req.body.temp,
