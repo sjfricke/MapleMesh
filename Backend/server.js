@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 
 var mongoose = require('mongoose');
-var mongoURI = "mongodb://maplemesh:maplemesh@ds155577.mlab.com:55577/maplemesh";
+var mongoURI = "mongodb://maplemesh:maplemesh18@ds155577.mlab.com:55577/maplemesh";
 var mongodb = mongoose.connect(mongoURI).connection;
 mongodb.on('error', function(err){console.log(err.message);});
 mongodb.once('open', function(){

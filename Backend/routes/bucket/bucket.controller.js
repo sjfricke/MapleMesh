@@ -4,11 +4,11 @@
     var Bucket = require('./bucket.model.js'); //schema for bucket item
 
     module.exports.getById = function(req, res){
-        Bucket.find({"_id": req.params.id}, function(err, res){
+        Bucket.find({"_id": req.params.id}, function(err, result){
             if(err){
                 console.log(err);
                 return res.status(500).send(err);
-            }return res.json(res);
+            }return res.json(result);
         });
     };
 
@@ -98,7 +98,7 @@
     };
 
     module.exports.add = function(req, res){
-        if(!req.lat || !req.long || !req.volume || !req.temp){
+        if(!req.body.lat || !req.body.long || !req.body.volume || !req.body.temp){
             return res.status(400).send("Need a valid latitude, longitude, volume, and temeprature in the post body");
         }
 
