@@ -40,6 +40,15 @@
         });
     };
 
+    module.exports.getByLocation = function(req, res){
+        Bucket.find({"long" : {$eq: req.params.long}, "lat" : {$eq: req.params.lat}}, function(err, result){
+            if(err){
+                console.log(err);
+                return res.status(500).send(err);
+            } return res.json(result);
+        });
+    };
+
     module.exports.getByTemp = function(req, res){
         Bucket.find({"temp":{$eq: req.params.temp}}, function(err, result){
             if(err){
@@ -81,7 +90,7 @@
         if(!req.body.lat || !req.body.long || !req.body.volume || !req.body.temp){
             return res.status(400).send("Need a valid latitude, longitude, volume, and temeprature in the post body");
         }
-        
+
         console.log("creating bucket");
 
         var bucket = new Bucket({

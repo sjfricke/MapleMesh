@@ -11,6 +11,7 @@
     router.get('/lat/:lat', controller.getByLat);
     router.get('/long/:long', controller.getByLong);
     router.get('/temp/:temp', controller.getByTemp);
+    router.get('/loc/:long/:lat', controller.getByLocation);
     router.get('/volume/:volume', controller.getByVolume);
     router.get('/isfull/:isFull', controller.getByIsFull);
     router.get('/getAll/getAll', controller.getAll);
