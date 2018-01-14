@@ -3,12 +3,15 @@
 
     var Bucket = require('./bucket.model.js'); //schema for bucket item
 
+    var HardBuckets = [];
+    // HardBuckets.push{id : HardBuckets.length + 1, realID : _id}
+
     module.exports.getById = function(req, res){
-        Bucket.find({"_id": req.params.id}, function(err, res){
+        Bucket.find({"_id": req.params.id}, function(err, result){
             if(err){
                 console.log(err);
                 return res.status(500).send(err);
-            }return res.json(res);
+            }return res.json(result);
         });
     };
 
@@ -98,7 +101,7 @@
     };
 
     module.exports.add = function(req, res){
-        if(!req.lat || !req.long || !req.volume || !req.temp){
+        if(!req.body.lat || !req.body.long || !req.body.volume || !req.body.temp){
             return res.status(400).send("Need a valid latitude, longitude, volume, and temeprature in the post body");
         }
 
@@ -116,12 +119,17 @@
             if(err){
                 console.log(err);
                 return res.status(500).send(err);
-            } return res.json(result);
+            } 
+            HardBuckets.push({'id': HardBuckets.length, 'realID': req.body._id});
+            console.log(HardBuckets.toString);
+            // Add result._id as realID in HardBucket
+
+            return res.json(result);
         });
     };
 
     module.exports.updateLocation = function(req, res){
-
+        console.log()
         if (!req.body.id) {
             return res.status(400).send("No ID present");
         } else if ( typeof(req.body.lat) != 'number' || typeof(req.body.long) != 'number') {
@@ -167,12 +175,17 @@
     };
 
     module.exports.updateVolume = function(req, res){
-        if(!req.body.id){
-            return res.status(400).send("No ID present");
-        } else if (typeof(req.body.volume) != 'number'){
-            return res.status(400).send("Volume not valid!");
+
+        var realID;
+        for (var i = 0; i < HardBuckets.length; i++){
+            if(HardBuckets[i]._id == parseInt(req.body.id)){
+                realID = HardBuckets[i].realID;
+                break;
+            }
         }
-        Bucket.update({'_id': req.body.id}, {$set: {'volume': req.body.volume}}, function(err, result){
+        // loop through hardbucket and get realID
+
+        Bucket.update({'_id': realID}, {$set: {'volume': req.body.volume}}, function(err, result){
             if(err){
                 console.log(err);
                 return res.status(500).send(err);
