@@ -12,8 +12,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 
 var mongoose = require('mongoose');
-var mongoURI = "mongodb://maplemesh:maplemesh@ds155577.mlab.com:55577/maplemesh";
-var mongodb = mongoose.connect(mongoURI).connection;
+var mongoURI = "mongodb://maplemesh:maplemesh18@ds155577.mlab.com:55577/maplemesh";
+//mongoose.Promise = require('bluebird');
+var mongodb = mongoose.connect(mongoURI, {useMongoClient: true});
 mongodb.on('error', function(err){console.log(err.message);});
 mongodb.once('open', function(){
     console.log("Connection established");
@@ -32,5 +33,7 @@ app.use('/api', api);
 //     }
 //     return res.status(200).send("yay");
 // });
-
-app.listen(3000);
+var port = process.env.PORT || 8080;
+app.listen(port, function(){
+    console.log("App is running on " + port);
+});

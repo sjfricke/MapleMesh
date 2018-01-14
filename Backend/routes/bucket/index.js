@@ -3,6 +3,7 @@
 
     var express = require('express');
     var controller = require('./bucket.controller.js');
+    var computer = require('./bucket.compute.js');
 
     var router = express.Router();
 
@@ -12,6 +13,10 @@
     router.get('/temp/:temp', controller.getByTemp);
     router.get('/volume/:volume', controller.getByVolume);
     router.get('/isfull/:isFull', controller.getByIsFull);
+    router.get('/getAll/getAll', controller.getAll);
+
+   // router.get('/compute/totalMaple', computer.sumRandom);
+
 
     router.post('/', controller.add);
     router.post('/update/temp/', controller.updateTemperature);

@@ -2,13 +2,24 @@
     'use strict'; //prevents the use of faulty implementations in javascript
 
     var Bucket = require('./bucket.model.js'); //schema for bucket item
+    var Compute = require('./bucket.compute.js');
 
     module.exports.getById = function(req, res){
-        Bucket.find({"_id": req.params.id}, function(err, res){
+        Bucket.find({"_id": req.params.id}, function(err, result){
             if(err){
                 console.log(err);
                 return res.status(500).send(err);
-            }return res.json(res);
+            }return res.json(result);
+        });
+    };
+
+    module.exports.getAll = function(req, res){
+        Bucket.find({}, function(err, buckets){
+            if(err){
+                console.log(err);
+                return res.status(500).send(err);
+            }
+            return res.json(buckets);
         });
     };
 
@@ -67,9 +78,11 @@
     };
 
     module.exports.add = function(req, res){
-        if(!req.lat || !req.long || !req.volume || !req.temp){
+        if(!req.body.lat || !req.body.long || !req.body.volume || !req.body.temp){
             return res.status(400).send("Need a valid latitude, longitude, volume, and temeprature in the post body");
         }
+        
+        console.log("creating bucket");
 
         var bucket = new Bucket({
             lat: req.body.lat,
@@ -80,12 +93,16 @@
             isFull: false
         });
 
+        console.log("Bucket created");
+
         bucket.save(function(err, result){
             if(err){
-                console.log(err);
+                console.error(err);
                 return res.status(500).send(err);
             } return res.json(result);
         });
+
+        console.log("Saved")
     };
 
     module.exports.updateLocation = function(req, res){
@@ -106,7 +123,7 @@
     };
 
     module.exports.updateTemperature = function(req, res){
-        if(!req.body.id){
+        if(!req.body._id){
             return res.status(400).send("No ID present");
         }else if (typeof(req.body.temp) != 'number'){
             return res.status(400).send("Temperature not valid");
@@ -129,7 +146,12 @@
             if(err){
                 console.log(err);
                 return res.status(500).send(err);
-            } return res.json(result);
+            }
+            if (req.body.volume >= req.body.maxVolume){
+                console.log('Filled');
+                Bucket.update({'_id': req.body.id}, {$set: {'isFull': true}});
+            } 
+            return res.json(result);
         });
     };
 
@@ -143,5 +165,4 @@
         });
     };
 
-    
 })();
