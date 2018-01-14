@@ -10,6 +10,7 @@
     router.get('/lat/:lat', controller.getByLat);
     router.get('/long/:long', controller.getByLong);
     router.get('/temp/:temp', controller.getByTemp);
+    router.get('location/:lat/:long', controller.getByLocation);
     router.get('/volume/:volume', controller.getByVolume);
     router.get('/isfull/:isFull', controller.getByIsFull);
 

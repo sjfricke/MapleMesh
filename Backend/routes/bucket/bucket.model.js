@@ -6,6 +6,7 @@
 
     var BucketSchema = new Schema(
         {
+            name: String,
             lat: Number,
             long: Number,
             temp: Number,
