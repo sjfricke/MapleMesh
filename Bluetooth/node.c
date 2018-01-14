@@ -10,8 +10,6 @@
 #define TRUE 1
 #define FALSE 0
 
-const int POLL_TIME = 5; // secs
-
 typedef struct node_t {
   int16_t temp;
   uint8_t vol;
@@ -82,6 +80,10 @@ void setLED() {
   fclose(fp);
 }
 
+void sendValue(){
+  printf("sent value\n");
+}
+
 int main(int argc, char **argv)
 {
   // for demo
@@ -115,7 +117,18 @@ int main(int argc, char **argv)
       // read data from the client
       bytes_read = read(client, buf, sizeof(buf));
       if( bytes_read > 0 ) {
-	setLED();
+	switch (buf[0]) {
+	case '0': // get value
+	  sendValue();
+	  break;
+	case '1':
+	  break;
+	case '2':
+	  break;
+	default:
+	  break;
+	}
+	//	setLED();
 	printf("received [%s]\n", buf);
       }
   }
