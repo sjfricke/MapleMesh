@@ -135,7 +135,7 @@ int main(int argc, char **argv)
 
 
       // Set up output through speakers
-      sprintf(command, "curl --data \"id=%d&volume=%s\" 10.19.134.167:3000/api/bucket/update/volume", id, volume);
+      sprintf(command, "curl --data \"id=%d&volume=%s\" https://maplemesh.herokuapp.com/api/bucket/update/volume", id, volume);
       system(command);
     }
   }
